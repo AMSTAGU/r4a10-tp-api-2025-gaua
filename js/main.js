@@ -75,7 +75,11 @@ view.selectionArretDepart.addEventListener("change", () => {
   view.selectionArretArrivee.disabled = false;
 });
 
-// 🔹 Gestion du bouton Calculer
+// Stocker les instances des compteurs pour les arrêter si besoin
+let firstCountdown = null;
+let secondCountdown = null;
+
+// Gestion du bouton Calculer
 view.btnCalculer.addEventListener("click", async () => {
   const ligne = view.selectionLigne.value;
   const arretDepartCode = view.selectionArretDepart.value;
@@ -87,75 +91,69 @@ view.btnCalculer.addEventListener("click", async () => {
     return;
   }
 
-  // Création de l'objet Search avec la direction calculée automatiquement
+  //  Arrêter les anciens `CountDown` s'ils existent
+  if (firstCountdown) {
+    firstCountdown.stop();
+    firstCountdown = null;
+  }
+  if (secondCountdown) {
+    secondCountdown.stop();
+    secondCountdown = null;
+  }
+
+  // Création de l'objet Search
   const searchInstance = new Search(
     ligne,
     arretDepartCode,
     arretArriveeCode,
     date
   );
-
   console.log("Nouvelle recherche créée :", searchInstance);
 
-  // Attente de la direction avant de récupérer les passages
-  const checkDirection = async () => {
-    while (!searchInstance._direction) {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    }
+  //  Récupération des prochains passages
+  const nextPassages = date
+    ? await searchInstance.getScheduledTramTimes()
+    : await searchInstance.getNextPassages();
 
-    console.log("Direction après attente :", searchInstance._direction);
+  console.log("Prochains passages :", nextPassages);
 
-    // Maintenant qu'on a la direction, récupérer les prochains passages
+  // Vérification et affichage des temps de passage
+  if (nextPassages.length >= 1) {
+    firstCountdown = new CountDown(
+      getSecondsRemaining(
+        nextPassages[0].serviceDay,
+        nextPassages[0].realtimeArrival
+      )
+    );
+    firstCountdown.start((timer) => {
+      view.tramTime.textContent = `${timer.hours}h ${timer.minutes}m ${timer.seconds}s`;
+    });
+  } else {
+    view.tramTime.textContent = "Aucune donnée";
+  }
 
-    if (!date) {
-      const nextPassages = await searchInstance.getNextPassages();
-      console.log("Prochains passages :", nextPassages);
-
-      if (nextPassages.length >= 1) {
-        view.tramTime.textContent = convertSecondsToCountdown(
-          nextPassages[0].serviceDay,
-          nextPassages[0].realtimeArrival
-        );
-      } else {
-        view.tramTime.textContent = "Aucune donnée";
-      }
-
-      if (nextPassages.length >= 2) {
-        view.secondTramTime.textContent = convertSecondsToCountdown(
-          nextPassages[1].serviceDay,
-          nextPassages[1].realtimeArrival
-        );
-      } else {
-        view.secondTramTime.textContent = "Aucune donnée";
-      }
-    } else {
-      const nextPassages = await searchInstance.getScheduledTramTimes();
-      console.log("Horaires théoriques trouvés :", nextPassages);
-
-      if (nextPassages.length >= 1) {
-        view.tramTime.textContent = convertSecondsToCountdown(
-          nextPassages[0].serviceDay,
-          nextPassages[0].realtimeArrival
-        );
-      } else {
-        view.tramTime.textContent = "Aucune donnée";
-      }
-
-      if (nextPassages.length >= 2) {
-        view.secondTramTime.textContent = convertSecondsToCountdown(
-          nextPassages[1].serviceDay,
-          nextPassages[1].realtimeArrival
-        );
-      } else {
-        view.secondTramTime.textContent = "Aucune donnée";
-      }
-    }
-  };
-
-  checkDirection();
+  if (nextPassages.length >= 2) {
+    secondCountdown = new CountDown(
+      getSecondsRemaining(
+        nextPassages[1].serviceDay,
+        nextPassages[1].realtimeArrival
+      )
+    );
+    secondCountdown.start((timer) => {
+      view.secondTramTime.textContent = `${timer.hours}h ${timer.minutes}m ${timer.seconds}s`;
+    });
+  } else {
+    view.secondTramTime.textContent = "Aucune donnée";
+  }
 });
 
-// 🔹 Gestion du bouton Changer
+function getSecondsRemaining(serviceDay, realtimeArrival) {
+  const now = Math.floor(Date.now() / 1000); // Temps actuel en secondes UNIX
+  const nextTramTime = serviceDay + realtimeArrival; // ✅ Convertir en timestamp absolu
+  return nextTramTime - now; // ✅ Retourne le temps restant en secondes
+}
+
+// Gestion du bouton Changer
 view.btnChanger.addEventListener("click", () => {
   const ligne = view.selectionLigne.value;
   const arretDepartCode = view.selectionArretDepart.value;
@@ -178,19 +176,3 @@ view.btnChanger.addEventListener("click", () => {
   view.selectionArretDepart.value = searchInstance.arretDepart;
   view.selectionArretArrivee.value = searchInstance.arretArrivee;
 });
-
-function convertSecondsToCountdown(serviceDay, realtimeArrival) {
-  const now = Math.floor(Date.now() / 1000); // Temps actuel en secondes UNIX
-  const nextTramTime = serviceDay + realtimeArrival; // ✅ Convertir en timestamp absolu
-  const diff = nextTramTime - now; // ✅ Calcul du temps restant
-
-  if (diff < 0) {
-    return "Aucun tram à venir";
-  }
-
-  const hours = Math.floor(diff / 3600);
-  const minutes = Math.floor((diff % 3600) / 60);
-  const seconds = diff % 60;
-
-  return `${hours}h ${minutes}m ${seconds}s`;
-}
