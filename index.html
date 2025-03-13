@@ -4,41 +4,149 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Grenoble Tram Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
   </head>
-  <body>
-    <select id="favoris"></select>
+  <body
+    class="relative h-full w-full bg-slate-950 font-[Outfit] flex flex-col items-center justify-center"
+  >
+    <div
+      class="z-[-1] absolute bottom-0 left-0 right-0 top-0 h-[150%] bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"
+    ></div>
 
-    <br />
-    <br />
+    <div class="flex items-center justify-end w-full gap-8 pt-12 px-44">
+      <a
+        href="https://github.com/AMSTAGU/Grenoble-Tram-Calculator"
+        target="_blank"
+      >
+        <img src="/src/github.png" alt="github" width="30" />
+      </a>
+      <a href="https://amaurygau.com/" target="_blank">
+        <img src="/src/portfolio.png" alt="portfolio" width="35" />
+      </a>
+    </div>
 
-    <label for="selection_ligne">Sélection Ligne :</label>
-    <select id="selection_ligne">
-      <option value="SEM:A">Ligne A</option>
-      <option value="SEM:B">Ligne B</option>
-      <option value="SEM:C">Ligne C</option>
-      <option value="SEM:D">Ligne D</option>
-      <option value="SEM:E">Ligne E</option>
-    </select>
+    <div class="flex flex-col items-center pt-12">
+      <h1 class="text-white text-[64px] font-semibold mb-10">Grenoble Tram</h1>
+      <h1
+        class="text-[64px] font-semibold mb-10 mt-[-60px] bg-gradient-to-r from-white to-[#4D234E] bg-clip-text text-transparent"
+      >
+        Calculator
+      </h1>
+    </div>
 
-    <label for="selection_option">Départ :</label>
-    <select id="arret_depart"></select>
+    <p class="text-white text-[20px] w-[30vw] mb-10 text-center">
+      Consultez en temps réel les horaires des trams de Grenoble grâce à l’API
+      SMMAG.
+    </p>
 
-    <button id="btn_changer">Bouton Changer</button>
+    <div>
+      <div class="flex">
+        <select
+          id="favoris"
+          class="appearance-none bg-transparent border-none outline-none text-white opacity-40 ml-4 mb-3"
+        ></select>
+        <img class="p-3 pb-5" src="/src/chevron.svg" alt="v" />
+      </div>
 
-    <label for="selection_choix">Arrivée :</label>
-    <select id="arret_arrivee"></select>
+      <div class="flex items-center">
+        <div
+          class="flex items-center justify-center bg-white px-3 py-2 rounded-[15px]"
+        >
+          <label for="selection_ligne"></label>
+          <select id="selection_ligne" class="opacity-75 mr-6">
+            <option value="" disabled selected>Ligne</option>
 
-    <label for="date_heure">Sélection de date et heure :</label>
-    <input type="datetime-local" id="date_heure" />
+            <option value="SEM:A">Ligne A</option>
+            <option value="SEM:B">Ligne B</option>
+            <option value="SEM:C">Ligne C</option>
+            <option value="SEM:D">Ligne D</option>
+            <option value="SEM:E">Ligne E</option>
+          </select>
 
-    <button id="btn_calculer">Calculer</button>
+          <div class="flex flex-col mr-6">
+            <label for="selection_option" class="opacity-75 pl-1">
+              Arret de départ</label
+            >
+            <select id="arret_depart" class="text-[#AF75AF] mt-[-4px] min-w-72">
+              <option value="" disabled selected>Sélectionner un arrêt</option>
+            </select>
+          </div>
 
-    <button id="btn_favoris">Favoris</button>
+          <button
+            id="btn_changer"
+            class="mr-6 w-10 h-12 flex items-center justify-center"
+          >
+            <img src="src/changer.png" alt="Changer" class="w-full" />
+          </button>
 
-    <p>Votre tram est dans :</p>
-    <p id="tram-time"></p>
-    <p>Le prochain est dans :</p>
-    <p id="second-tram-time"></p>
+          <div class="flex flex-col w-80 mr-10">
+            <label for="selection_choix"></label>
+            <select id="arret_arrivee">
+              <option value="" disabled selected>Arrivée</option>
+            </select>
+          </div>
+          <label for="date_heure" class="pr-3"
+            >Ajouter une heure d'arrivée</label
+          >
+          <input
+            type="datetime-local"
+            class="appearance-none bg-white border border-gray-300 text-gray-900 rounded-md p-2 mr-6"
+            id="date_heure"
+          />
+          <button
+            id="btn_calculer"
+            class="px-4 py-2 text-white rounded-md bg-[linear-gradient(117.6deg,_#FFFFFF_-66.51%,_#4D234E_111.38%)]"
+          >
+            Calculer
+          </button>
+        </div>
+        <div>
+          <button id="btn_favoris" class="pl-5">
+            <img src="src/Favoris.svg" alt="Favoris" />
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-20">
+      <div class="flex items-center text-[14px] gap-10">
+        <div class="text-white mb-[-10px] pl-4">Ligne :</div>
+        <div></div>
+        <div class="text-white mb-[-10px] pl-4">Arret :</div>
+        <div></div>
+      </div>
+
+      <div
+        class="bg-white p-6 rounded-[15px] mt-4 flex items-center justify-between w-[35vw] text-[18px] opacity-80 font-medium"
+      >
+        <p class="">Votre tram est dans</p>
+        <p id="tram-time"></p>
+      </div>
+    </div>
+
+    <div class="w-[35vw] flex justify-end mr-5 font font-medium">
+      <div
+        class="bg-white opacity-40 p-6 w-[15vw] rounded-[15px] mt-4 flex items-center justify-between text-[18px]"
+      >
+        <p>Suivant</p>
+        <p id="second-tram-time"></p>
+      </div>
+    </div>
+
+    <div class="absolute bottom-[-160px] text-white pb-4">
+      Made By
+      <span
+        class="bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent"
+        >Amaury Gau</span
+      >
+    </div>
+
     <!-- Chargement du script principal en tant que module -->
     <script type="module" src="js/main.js"></script>
   </body>

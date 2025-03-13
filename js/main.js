@@ -41,7 +41,7 @@ view.selectionLigne.addEventListener("change", async () => {
 
     // Remplissage de la sélection "ArretDepart"
     view.selectionArretDepart.innerHTML =
-      '<option value="">Sélectionner un arrêt de départ</option>';
+      '<option value="">Sélectionner un arrêt</option>';
     arretsData.forEach((arret) => {
       const option = document.createElement("option");
       option.value = arret.parentStation.code;
@@ -66,8 +66,7 @@ view.selectionArretDepart.addEventListener("change", () => {
   }
 
   // Remplissage de la sélection "ArretArrivee" en excluant l'arrêt de départ
-  view.selectionArretArrivee.innerHTML =
-    '<option value="">Sélectionner un arrêt d\'arrivée</option>';
+  view.selectionArretArrivee.innerHTML = '<option value="">Arrivée</option>';
   arretsData
     .filter((arret) => arret.parentStation.code !== arretDepartSelectionne)
     .forEach((arret) => {
@@ -269,7 +268,7 @@ function loadFavorites() {
   const favorisSelect = document.getElementById("favoris");
 
   // Vider et réinitialiser le <select>
-  favorisSelect.innerHTML = '<option value="">Sélectionner un favori</option>';
+  favorisSelect.innerHTML = '<option value="">Favoris</option>';
 
   // Ajouter chaque favori à la liste
   favoris.forEach((fav, index) => {
