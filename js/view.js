@@ -12,6 +12,6 @@ export const view = {
   btnCalculer: document.getElementById("btn_calculer"),
 
   // Résultats
-  tramTime: document.getElementById("tram_time"),
+  tramTime: document.getElementById("tram-time"),
   secondTramTime: document.getElementById("second-tram-time"),
 };

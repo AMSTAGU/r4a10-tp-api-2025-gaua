@@ -2,23 +2,15 @@ import { Search } from "./modelSearch.js";
 import { view } from "./view.js";
 import { CountDown } from "./modelCountdown.js";
 
-//const countDown = new CountDown(300); // 300 secondes = 5 minutes
-//countDown.start((timer) => {
-//  console.log(
-//    `Temps restant : ${timer.hours}h ${timer.minutes}m ${timer.seconds}s`
-//  );
-//});
-
 // Désactive les sélections au départ
 view.selectionArretDepart.disabled = true;
 view.selectionArretArrivee.disabled = true;
 
-let arretsData = []; // Stocke les arrêts récupérés
+let arretsData = []; // Stocke les arrêts récupérés pour la ligne sélectionnée
 
 // Écouteur d'événement sur la sélection de la ligne
 view.selectionLigne.addEventListener("change", async () => {
   const ligneSelectionnee = view.selectionLigne.value;
-
   if (!ligneSelectionnee) return;
 
   // Désactive les sélections pendant le chargement
@@ -26,16 +18,19 @@ view.selectionLigne.addEventListener("change", async () => {
   view.selectionArretArrivee.disabled = true;
 
   try {
-    // Appel API pour récupérer les arrêts en fonction de la ligne sélectionnée
+    // Appel API pour récupérer les arrêts de la ligne
     const response = await fetch(
-      `https://data.mobilites-m.fr/api/routers/default/index/routes/${ligneSelectionnee}/clusters`
+      `https://data.mobilites-m.fr/api/ficheHoraires/json?route=${ligneSelectionnee}`
     );
-    arretsData = await response.json();
+    const data = await response.json();
 
-    // Vérification si des arrêts sont trouvés
-    if (!arretsData || arretsData.length === 0) {
-      console.error("Aucun arrêt trouvé pour cette ligne.");
-      return;
+    // On prend les arrêts de la première direction trouvée
+    arretsData =
+      Object.values(data).find((direction) => direction?.arrets?.length)
+        ?.arrets || [];
+
+    if (arretsData.length === 0) {
+      throw new Error("Aucun arrêt trouvé pour cette ligne.");
     }
 
     // Remplissage de la sélection "ArretDepart"
@@ -43,8 +38,8 @@ view.selectionLigne.addEventListener("change", async () => {
       '<option value="">Sélectionner un arrêt de départ</option>';
     arretsData.forEach((arret) => {
       const option = document.createElement("option");
-      option.value = arret.code; // On garde le code pour l'API
-      option.textContent = arret.name; // On affiche le nom
+      option.value = arret.parentStation.code;
+      option.textContent = arret.name;
       view.selectionArretDepart.appendChild(option);
     });
 
@@ -68,10 +63,10 @@ view.selectionArretDepart.addEventListener("change", () => {
   view.selectionArretArrivee.innerHTML =
     '<option value="">Sélectionner un arrêt d\'arrivée</option>';
   arretsData
-    .filter((arret) => arret.code !== arretDepartSelectionne)
+    .filter((arret) => arret.parentStation.code !== arretDepartSelectionne)
     .forEach((arret) => {
       const option = document.createElement("option");
-      option.value = arret.code;
+      option.value = arret.parentStation.code;
       option.textContent = arret.name;
       view.selectionArretArrivee.appendChild(option);
     });
@@ -80,20 +75,19 @@ view.selectionArretDepart.addEventListener("change", () => {
   view.selectionArretArrivee.disabled = false;
 });
 
-view.btnCalculer.addEventListener("click", () => {
-  // Récupération des valeurs sélectionnées
+// 🔹 Gestion du bouton Calculer
+view.btnCalculer.addEventListener("click", async () => {
   const ligne = view.selectionLigne.value;
-  const arretDepartCode = view.selectionArretDepart.value; // Utilise le code de l'arrêt
-  const arretArriveeCode = view.selectionArretArrivee.value; // Utilise le code de l'arrêt
-  const date = view.dateHeureInput.value;
+  const arretDepartCode = view.selectionArretDepart.value;
+  const arretArriveeCode = view.selectionArretArrivee.value;
+  let date = view.dateHeureInput.value;
 
-  // Vérification que tout est bien sélectionné
-  if (!ligne || !arretDepartCode || !arretArriveeCode || !date) {
+  if (!ligne || !arretDepartCode || !arretArriveeCode) {
     console.warn("Veuillez remplir tous les champs avant de calculer.");
     return;
   }
 
-  // Création de l'objet Search
+  // Création de l'objet Search avec la direction calculée automatiquement
   const searchInstance = new Search(
     ligne,
     arretDepartCode,
@@ -101,6 +95,102 @@ view.btnCalculer.addEventListener("click", () => {
     date
   );
 
-  // Affichage dans la console pour vérification
   console.log("Nouvelle recherche créée :", searchInstance);
+
+  // Attente de la direction avant de récupérer les passages
+  const checkDirection = async () => {
+    while (!searchInstance._direction) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+
+    console.log("Direction après attente :", searchInstance._direction);
+
+    // Maintenant qu'on a la direction, récupérer les prochains passages
+
+    if (!date) {
+      const nextPassages = await searchInstance.getNextPassages();
+      console.log("Prochains passages :", nextPassages);
+
+      if (nextPassages.length >= 1) {
+        view.tramTime.textContent = convertSecondsToCountdown(
+          nextPassages[0].serviceDay,
+          nextPassages[0].realtimeArrival
+        );
+      } else {
+        view.tramTime.textContent = "Aucune donnée";
+      }
+
+      if (nextPassages.length >= 2) {
+        view.secondTramTime.textContent = convertSecondsToCountdown(
+          nextPassages[1].serviceDay,
+          nextPassages[1].realtimeArrival
+        );
+      } else {
+        view.secondTramTime.textContent = "Aucune donnée";
+      }
+    } else {
+      const nextPassages = await searchInstance.getScheduledTramTimes();
+      console.log("Horaires théoriques trouvés :", nextPassages);
+
+      if (nextPassages.length >= 1) {
+        view.tramTime.textContent = convertSecondsToCountdown(
+          nextPassages[0].serviceDay,
+          nextPassages[0].realtimeArrival
+        );
+      } else {
+        view.tramTime.textContent = "Aucune donnée";
+      }
+
+      if (nextPassages.length >= 2) {
+        view.secondTramTime.textContent = convertSecondsToCountdown(
+          nextPassages[1].serviceDay,
+          nextPassages[1].realtimeArrival
+        );
+      } else {
+        view.secondTramTime.textContent = "Aucune donnée";
+      }
+    }
+  };
+
+  checkDirection();
 });
+
+// 🔹 Gestion du bouton Changer
+view.btnChanger.addEventListener("click", () => {
+  const ligne = view.selectionLigne.value;
+  const arretDepartCode = view.selectionArretDepart.value;
+  const arretArriveeCode = view.selectionArretArrivee.value;
+  const date = view.dateHeureInput.value;
+
+  if (!ligne || !arretDepartCode || !arretArriveeCode || !date) {
+    console.warn("Veuillez remplir tous les champs avant de calculer.");
+    return;
+  }
+
+  const searchInstance = new Search(
+    ligne,
+    arretDepartCode,
+    arretArriveeCode,
+    date
+  );
+  searchInstance.intervertirArrets();
+
+  view.selectionArretDepart.value = searchInstance.arretDepart;
+  view.selectionArretArrivee.value = searchInstance.arretArrivee;
+});
+
+function convertSecondsToCountdown(serviceDay, realtimeArrival) {
+  const now = Math.floor(Date.now() / 1000); // Temps actuel en secondes UNIX
+  const nextTramTime = serviceDay + realtimeArrival; // ✅ Convertir en timestamp absolu
+  const diff = nextTramTime - now; // ✅ Calcul du temps restant
+
+  if (diff < 0) {
+    return "Aucun tram à venir";
+  }
+
+  const hours = Math.floor(diff / 3600);
+  const minutes = Math.floor((diff % 3600) / 60);
+  const seconds = diff % 60;
+
+  return `${hours}h ${minutes}m ${seconds}s`;
+}
