@@ -14,4 +14,8 @@ export const view = {
   // Résultats
   tramTime: document.getElementById("tram-time"),
   secondTramTime: document.getElementById("second-tram-time"),
+
+  // Favoris
+  favoris: document.getElementById("favoris"),
+  btnFavoris: document.getElementById("btn_favoris"),
 };

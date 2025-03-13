@@ -6,11 +6,10 @@
     <title>Grenoble Tram Calculator</title>
   </head>
   <body>
-    <!--
-    <h1 class="p-10">Prochain Tram</h1>
-    <p id="tram-time">Le prochain tram est dans ...</p>
-    <button onclick="calculateTramTime()">Calculer</button>
-     -->
+    <select id="favoris"></select>
+
+    <br />
+    <br />
 
     <label for="selection_ligne">Sélection Ligne :</label>
     <select id="selection_ligne">
@@ -33,6 +32,8 @@
     <input type="datetime-local" id="date_heure" />
 
     <button id="btn_calculer">Calculer</button>
+
+    <button id="btn_favoris">Favoris</button>
 
     <p>Votre tram est dans :</p>
     <p id="tram-time"></p>

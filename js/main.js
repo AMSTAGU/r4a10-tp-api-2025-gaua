@@ -2,6 +2,12 @@ import { Search } from "./modelSearch.js";
 import { view } from "./view.js";
 import { CountDown } from "./modelCountdown.js";
 
+// Déclaration de la variable searchInstance
+let searchInstance = null;
+
+// Charger les favoris au démarrage
+loadFavorites();
+
 // Désactive les sélections au départ
 view.selectionArretDepart.disabled = true;
 view.selectionArretArrivee.disabled = true;
@@ -91,7 +97,7 @@ view.btnCalculer.addEventListener("click", async () => {
     return;
   }
 
-  //  Arrêter les anciens `CountDown` s'ils existent
+  // Arrêter les anciens `CountDown` s'ils existent
   if (firstCountdown) {
     firstCountdown.stop();
     firstCountdown = null;
@@ -102,12 +108,21 @@ view.btnCalculer.addEventListener("click", async () => {
   }
 
   // Création de l'objet Search
-  const searchInstance = new Search(
-    ligne,
-    arretDepartCode,
-    arretArriveeCode,
-    date
+  if (!searchInstance) {
+    searchInstance = new Search(ligne, arretDepartCode, arretArriveeCode, date);
+  } else {
+    searchInstance._ligne = ligne;
+    searchInstance._arretDepart = arretDepartCode;
+    searchInstance._arretArrivee = arretArriveeCode;
+    searchInstance._date = date;
+  }
+  searchInstance._direction = await searchInstance.initDirection(
+    searchInstance._ligne,
+    searchInstance._arretDepart,
+    searchInstance._arretArrivee
   );
+  console.log("Nouvelle direction calculée :", searchInstance._direction);
+
   console.log("Nouvelle recherche créée :", searchInstance);
 
   //  Récupération des prochains passages
@@ -129,7 +144,7 @@ view.btnCalculer.addEventListener("click", async () => {
       view.tramTime.textContent = `${timer.hours}h ${timer.minutes}m ${timer.seconds}s`;
     });
   } else {
-    view.tramTime.textContent = "Aucune donnée";
+    view.tramTime.textContent = " - - -";
   }
 
   if (nextPassages.length >= 2) {
@@ -143,36 +158,165 @@ view.btnCalculer.addEventListener("click", async () => {
       view.secondTramTime.textContent = `${timer.hours}h ${timer.minutes}m ${timer.seconds}s`;
     });
   } else {
-    view.secondTramTime.textContent = "Aucune donnée";
+    view.secondTramTime.textContent = "- - -";
   }
 });
 
 function getSecondsRemaining(serviceDay, realtimeArrival) {
-  const now = Math.floor(Date.now() / 1000); // Temps actuel en secondes UNIX
-  const nextTramTime = serviceDay + realtimeArrival; // ✅ Convertir en timestamp absolu
-  return nextTramTime - now; // ✅ Retourne le temps restant en secondes
+  const now = Math.floor(Date.now() / 1000);
+  const nextTramTime = serviceDay + realtimeArrival;
+  return nextTramTime - now;
 }
 
-// Gestion du bouton Changer
-view.btnChanger.addEventListener("click", () => {
-  const ligne = view.selectionLigne.value;
-  const arretDepartCode = view.selectionArretDepart.value;
-  const arretArriveeCode = view.selectionArretArrivee.value;
-  const date = view.dateHeureInput.value;
-
-  if (!ligne || !arretDepartCode || !arretArriveeCode || !date) {
-    console.warn("Veuillez remplir tous les champs avant de calculer.");
+view.btnFavoris.addEventListener("click", () => {
+  if (
+    !view.selectionLigne.value ||
+    !view.selectionArretDepart.value ||
+    !view.selectionArretArrivee.value
+  ) {
+    console.warn("Veuillez remplir tous les champs avant d'ajouter un favori.");
     return;
   }
 
-  const searchInstance = new Search(
-    ligne,
-    arretDepartCode,
-    arretArriveeCode,
-    date
-  );
-  searchInstance.intervertirArrets();
+  // ✅ Récupérer les valeurs sélectionnées
+  const favori = {
+    ligne: view.selectionLigne.value,
+    arretDepart: view.selectionArretDepart.value,
+    arretDepartNom:
+      view.selectionArretDepart.options[view.selectionArretDepart.selectedIndex]
+        .text, // Récupérer le nom affiché
+    arretArrivee: view.selectionArretArrivee.value,
+    arretArriveeNom:
+      view.selectionArretArrivee.options[
+        view.selectionArretArrivee.selectedIndex
+      ].text, // Récupérer le nom affiché
+    date: view.dateHeureInput.value,
+    ligneNom:
+      view.selectionLigne.options[view.selectionLigne.selectedIndex].text, // Récupérer le nom affiché
+  };
 
-  view.selectionArretDepart.value = searchInstance.arretDepart;
-  view.selectionArretArrivee.value = searchInstance.arretArrivee;
+  let favoris = JSON.parse(localStorage.getItem("favoris")) || [];
+
+  // Vérifier si le favori existe déjà
+  const index = favoris.findIndex(
+    (f) =>
+      f.ligne === favori.ligne &&
+      f.arretDepart === favori.arretDepart &&
+      f.arretArrivee === favori.arretArrivee &&
+      f.date === favori.date
+  );
+
+  if (index !== -1) {
+    // Si le favori existe, on le supprime
+    favoris.splice(index, 1);
+    console.log("❌ Favori supprimé :", favori);
+  } else {
+    // Sinon, on l'ajoute
+    favoris.push(favori);
+    console.log("✅ Favori ajouté :", favori);
+  }
+
+  // Mettre à jour `localStorage`
+  localStorage.setItem("favoris", JSON.stringify(favoris));
+
+  // Rafraîchir la liste des favoris
+  updateFavorisList();
+  loadFavorites();
 });
+
+view.favoris.addEventListener("change", (event) => {
+  const favoris = JSON.parse(localStorage.getItem("favoris")) || [];
+  const selectedIndex = event.target.value;
+
+  if (selectedIndex === "") return; // Aucun favori sélectionné
+
+  const fav = favoris[selectedIndex];
+
+  console.log("Favori sélectionné :", fav);
+
+  // Appliquer les valeurs aux sélections
+  view.selectionLigne.value = fav.ligne;
+  view.selectionLigne.dispatchEvent(new Event("change")); // Déclenche le chargement des arrêts
+
+  // Attendre que les arrêts soient chargés avant de mettre les valeurs des arrêts
+  setTimeout(() => {
+    view.selectionArretDepart.value = fav.arretDepart;
+    view.selectionArretDepart.dispatchEvent(new Event("change"));
+    if (fav.date) {
+      view.dateHeureInput.value = fav.date;
+    }
+
+    setTimeout(() => {
+      view.selectionArretArrivee.value = fav.arretArrivee;
+    }, 300);
+  }, 500);
+});
+
+function updateFavorisList() {
+  const favoris = JSON.parse(localStorage.getItem("favoris")) || [];
+  view.favoris.innerHTML = "";
+  favoris.forEach((favori, index) => {
+    const li = document.createElement("li");
+    li.textContent = `Favori ${index + 1} : Ligne ${favori.ligne}, départ ${
+      favori.arretDepart
+    }, arrivée ${favori.arretArrivee}, date ${favori.date}`;
+    view.favoris.appendChild(li);
+  });
+}
+
+function loadFavorites() {
+  const favoris = JSON.parse(localStorage.getItem("favoris")) || [];
+  const favorisSelect = document.getElementById("favoris");
+
+  // Vider et réinitialiser le <select>
+  favorisSelect.innerHTML = '<option value="">Sélectionner un favori</option>';
+
+  // Ajouter chaque favori à la liste
+  favoris.forEach((fav, index) => {
+    const option = document.createElement("option");
+    option.value = index; // On stocke l'index du favori
+    option.textContent = `${fav.ligneNom} - ${fav.arretDepartNom} ➝ ${
+      fav.arretArriveeNom
+    } heure : ${fav.date ? fav.date : "Maintenant"}`;
+    favorisSelect.appendChild(option);
+  });
+}
+
+view.btnChanger.addEventListener("click", () => {
+  if (!searchInstance) return;
+
+  // Inversion des arrêts dans `searchInstance`
+  const temp = searchInstance._arretDepart;
+  searchInstance._arretDepart = searchInstance._arretArrivee;
+  searchInstance._arretArrivee = temp;
+
+  // Mise à jour des options d'arrêts d'arrivée
+  updateArretArriveeOptions(searchInstance._arretDepart);
+
+  // Appliquer les nouvelles valeurs dans les `<select>`
+  view.selectionArretDepart.value = searchInstance._arretDepart;
+  view.selectionArretDepart.dispatchEvent(new Event("change"));
+
+  setTimeout(() => {
+    view.selectionArretArrivee.value = searchInstance._arretArrivee;
+  }, 300);
+
+  console.log("✅ Arrêts inversés et rechargés :", searchInstance);
+});
+
+function updateArretArriveeOptions(arretDepartSelectionne) {
+  if (!arretDepartSelectionne) return;
+
+  // On remet à jour les options des arrêts d'arrivée
+  view.selectionArretArrivee.innerHTML =
+    '<option value="">Sélectionner un arrêt d\'arrivée</option>';
+
+  arretsData.forEach((arret) => {
+    const option = document.createElement("option");
+    option.value = arret.parentStation.code;
+    option.textContent = arret.name;
+    view.selectionArretArrivee.appendChild(option);
+  });
+
+  console.log("🔄 Options d'arrêts mises à jour après inversion");
+}

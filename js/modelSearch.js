@@ -18,60 +18,37 @@ export class Search {
       const response = await fetch(
         `https://data.mobilites-m.fr/api/ficheHoraires/json?route=${ligne}`
       );
-
-      if (!response.ok) {
-        throw new Error(`Erreur API: ${response.statusText}`);
-      }
-
       const data = await response.json();
 
-      // Récupérer la première liste d'arrêts disponibles
-      const arrets =
-        Object.values(data).find((direction) => direction?.arrets?.length)
-          ?.arrets || [];
+      const arrets = Object.values(data).flatMap((d) => d.arrets);
 
-      if (arrets.length === 0) {
-        throw new Error("Aucun arrêt trouvé pour cette ligne.");
-      }
-
-      // Trouver les index des arrêts de départ et d'arrivée
       const indexDepart = arrets.findIndex(
-        (stop) => stop.parentStation.code === arretDepart
+        (a) => a.parentStation.code === arretDepart
       );
       const indexArrivee = arrets.findIndex(
-        (stop) => stop.parentStation.code === arretArrivee
+        (a) => a.parentStation.code === arretArrivee
       );
 
       if (indexDepart === -1 || indexArrivee === -1) {
-        throw new Error(
-          "Arrêt de départ ou d'arrivée non trouvé dans la liste."
-        );
+        throw new Error("Impossible de trouver les arrêts.");
       }
 
-      // Déterminer la direction en fonction de l'ordre des arrêts
-      const direction =
+      let direction =
         indexDepart < indexArrivee
           ? arrets[arrets.length - 1].name
           : arrets[0].name;
 
+      // ✅ Correction spécifique pour la ligne E
+      if (this._ligne === "SEM:E" && direction === "Foch - Ferrié") {
+        direction = "Palluel";
+      }
+
       console.log(`Direction déterminée : ${direction}`);
-      return direction; // 🔹 On retourne la valeur correcte !
+      return direction;
     } catch (error) {
       console.error("Erreur lors de la récupération de la direction :", error);
       return null;
     }
-  }
-
-  intervertirArrets() {
-    const temp = this._arretDepart;
-    this._arretDepart = this._arretArrivee;
-    this._arretArrivee = temp;
-
-    this._direction = this.initDirection(
-      this._ligne,
-      this._arretDepart,
-      this._arretArrivee
-    );
   }
 
   async getNextPassages() {
@@ -137,6 +114,21 @@ export class Search {
   }
 
   async getScheduledTramTimes() {
+    if (!this._direction) {
+      console.log("Attente de la direction...");
+      this._direction = await this.initDirection(
+        this._ligne,
+        this._arretDepart,
+        this._arretArrivee
+      );
+    }
+
+    if (!this._direction) {
+      throw new Error("Impossible de récupérer la direction.");
+    }
+
+    console.log("Recherche avec direction :", this._direction);
+
     if (!this._date) {
       console.warn("Aucune date sélectionnée, utilisation du temps réel.");
       return this.getNextPassages();
@@ -315,23 +307,29 @@ export class Search {
     }
   }
 
-  get ligne() {
-    return this._ligne;
+  saveStateToClient() {
+    const state = {
+      ligne: this._ligne,
+      arretDepart: this._arretDepart,
+      arretArrivee: this._arretArrivee,
+      date: this._date,
+    };
+    localStorage.setItem("searchState", JSON.stringify(state));
+    console.log("État sauvegardé :", state);
   }
 
-  get arretDepart() {
-    return this._arretDepart;
-  }
+  // ✅ Récupère l'état de l'objet Search depuis le localStorage
+  static retrieveStateFromClient() {
+    const savedState = localStorage.getItem("searchState");
+    if (!savedState) return null;
 
-  get arretArrivee() {
-    return this._arretArrivee;
-  }
-
-  get date() {
-    return this._date;
-  }
-
-  get direction() {
-    return this._direction;
+    try {
+      const { ligne, arretDepart, arretArrivee, date } = JSON.parse(savedState);
+      console.log("État récupéré :", savedState);
+      return new Search(ligne, arretDepart, arretArrivee, date);
+    } catch (error) {
+      console.error("⚠ Erreur lors de la récupération de l'état :", error);
+      return null;
+    }
   }
 }
