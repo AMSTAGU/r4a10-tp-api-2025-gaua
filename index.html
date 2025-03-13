@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grenoble Tram Calculator</title>
+  </head>
+  <body>
+    <!--
+    <h1 class="p-10">Prochain Tram</h1>
+    <p id="tram-time">Le prochain tram est dans ...</p>
+    <button onclick="calculateTramTime()">Calculer</button>
+     -->
+
+    <label for="selection_ligne">Sélection Ligne :</label>
+    <select id="selection_ligne">
+      <option value="SEM:A">Ligne A</option>
+      <option value="SEM:B">Ligne B</option>
+      <option value="SEM:C">Ligne C</option>
+      <option value="SEM:D">Ligne D</option>
+      <option value="SEM:E">Ligne E</option>
+    </select>
+
+    <label for="selection_option">Départ :</label>
+    <select id="arret_depart"></select>
+
+    <button id="btn_changer">Bouton Changer</button>
+
+    <label for="selection_choix">Arrivée :</label>
+    <select id="arret_arrivee"></select>
+
+    <label for="date_heure">Sélection de date et heure :</label>
+    <input type="datetime-local" id="date_heure" />
+
+    <button id="btn_calculer">Calculer</button>
+
+    <p>Votre tram est dans :</p>
+    <p id="tram-time"></p>
+    <p>Le prochain est dans :</p>
+    <p id="second-tram-time"></p>
+    <!-- Chargement du script principal en tant que module -->
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>
