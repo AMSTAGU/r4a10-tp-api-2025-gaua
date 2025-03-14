@@ -24,5 +24,5 @@ export const view = {
   textLigne: document.getElementById("textLigne"),
 
   // Svg favoris
-  svgFavoris: document.getElementById(""),
+  svgFavoris: document.getElementById("favorisSvg"),
 };
