@@ -142,6 +142,15 @@ view.btnCalculer.addEventListener("click", async () => {
     firstCountdown.start((timer) => {
       view.tramTime.textContent = `${timer.hours}h ${timer.minutes}m ${timer.seconds}s`;
     });
+
+    view.textLigne.innerHTML = searchInstance._ligne
+      .split(":")
+      .slice(1)
+      .join(":");
+    view.textArretDepart.innerHTML =
+      view.selectionArretDepart.options[
+        view.selectionArretDepart.selectedIndex
+      ].text;
   } else {
     view.tramTime.textContent = " - - -";
   }
@@ -177,7 +186,7 @@ view.btnFavoris.addEventListener("click", () => {
     return;
   }
 
-  // ✅ Récupérer les valeurs sélectionnées
+  // Récupérer les valeurs sélectionnées
   const favori = {
     ligne: view.selectionLigne.value,
     arretDepart: view.selectionArretDepart.value,
@@ -208,11 +217,11 @@ view.btnFavoris.addEventListener("click", () => {
   if (index !== -1) {
     // Si le favori existe, on le supprime
     favoris.splice(index, 1);
-    console.log("❌ Favori supprimé :", favori);
+    console.log("Favori supprimé :", favori);
   } else {
     // Sinon, on l'ajoute
     favoris.push(favori);
-    console.log("✅ Favori ajouté :", favori);
+    console.log("Favori ajouté :", favori);
   }
 
   // Mettre à jour `localStorage`

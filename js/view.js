@@ -18,4 +18,8 @@ export const view = {
   // Favoris
   favoris: document.getElementById("favoris"),
   btnFavoris: document.getElementById("btn_favoris"),
+
+  // Text Arret / Ligne
+  textArretDepart: document.getElementById("textArret"),
+  textLigne: document.getElementById("textLigne"),
 };
