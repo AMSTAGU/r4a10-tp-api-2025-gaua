@@ -11,10 +11,6 @@ export const view = {
   btnChanger: document.getElementById("btn_changer"),
   btnCalculer: document.getElementById("btn_calculer"),
 
-  // Résultats
-  tramTime: document.getElementById("tram-time"),
-  secondTramTime: document.getElementById("second-tram-time"),
-
   // Favoris
   favoris: document.getElementById("favoris"),
   btnFavoris: document.getElementById("btn_favoris"),
@@ -34,4 +30,7 @@ export const view = {
   SecondTramTimeHours: document.getElementById("SecondTramTimeHours"),
   SecondTramTimeMinutes: document.getElementById("SecondTramTimeMin"),
   SecondTramTimeSeconds: document.getElementById("SecondTramTimeSeconds"),
+
+  // Ajouter Heure
+  AjouterHeure: document.getElementById("AjouterHeure"),
 };

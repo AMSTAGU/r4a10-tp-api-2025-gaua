@@ -19,34 +19,34 @@
       class="z-[-1] absolute bottom-0 left-0 right-0 top-0 h-[150%] bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"
     ></div>
 
-    <div class="flex items-center justify-end w-full gap-8 pt-12 px-44">
+    <div class="flex items-center justify-end w-full gap-6 pt-12 px-40">
       <a
         href="https://github.com/AMSTAGU/Grenoble-Tram-Calculator"
         target="_blank"
       >
-        <img src="/src/github.png" alt="github" width="30" />
+        <img src="/src/github.png" alt="github" width="25" />
       </a>
       <a href="https://amaurygau.com/" target="_blank">
-        <img src="/src/portfolio.png" alt="portfolio" width="35" />
+        <img src="/src/portfolio.png" alt="portfolio" width="30" />
       </a>
     </div>
 
-    <div class="flex flex-col items-center pt-12">
+    <div class="flex flex-col items-center pt-2">
       <h1 class="text-white text-[64px] font-semibold mb-10">Grenoble Tram</h1>
       <h1
-        class="text-[64px] font-semibold mb-10 mt-[-60px] bg-gradient-to-r from-white to-[#4D234E] bg-clip-text text-transparent"
+        class="text-[64px] font-semibold mt-[-60px] bg-gradient-to-r from-white to-[#4D234E] bg-clip-text text-transparent"
       >
         Calculator
       </h1>
     </div>
 
-    <p class="text-white text-[20px] w-[30vw] mb-10 text-center">
+    <p class="text-white text-[20px] w-[30vw] mb-10 text-center pt-2">
       Consultez en temps réel les horaires des trams de Grenoble grâce à l’API
       SMMAG.
     </p>
 
     <div>
-      <div class="flex">
+      <div class="flex mb-[-7px]">
         <select
           id="favoris"
           class="appearance-none bg-transparent border-none outline-none text-white opacity-40 ml-4 mb-3"
@@ -56,7 +56,7 @@
 
       <div class="flex items-center">
         <div
-          class="flex items-center justify-center bg-white px-3 py-2 rounded-[15px]"
+          class="flex items-center justify-center bg-white px-3 py-3 rounded-[15px] shadow-[0_12px_70px_rgba(175,_117,_175,_0.7)]"
         >
           <label for="selection_ligne"></label>
           <select id="selection_ligne" class="opacity-75 mr-6">
@@ -91,17 +91,23 @@
               <option value="" disabled selected>Arrivée</option>
             </select>
           </div>
-          <label for="date_heure" class="pr-3"
-            >Ajouter une heure d'arrivée</label
-          >
-          <input
-            type="datetime-local"
-            class="appearance-none bg-white border border-gray-300 text-gray-900 rounded-md p-2 mr-6"
-            id="date_heure"
-          />
+
+          <div class="flex w-56">
+            <div class="flex items-center" id="AjouterHeure">
+              <img src="/src//plus.svg" alt="+" class="mr-3 size-4" />
+              <label for="date_heure" class="pr-3 w-32 opacity-75"
+                >Ajouter une heure d'arrivée</label
+              >
+            </div>
+            <input
+              type="datetime-local"
+              class="appearance-none bg-white border border-gray-300 text-gray-900 rounded-md p-2 mr-6"
+              id="date_heure"
+            />
+          </div>
           <button
             id="btn_calculer"
-            class="px-4 py-2 text-white rounded-md bg-[linear-gradient(117.6deg,_#FFFFFF_-66.51%,_#4D234E_111.38%)]"
+            class="px-6 py-3 text-white rounded-md bg-[linear-gradient(117.6deg,_#FFFFFF_-66.51%,_#4D234E_111.38%)] text-xl"
           >
             Calculer
           </button>
@@ -114,10 +120,10 @@
       </div>
     </div>
 
-    <div class="pt-20 text-white mb pl-1">
+    <div class="pt-20 text-white pl-1">
       <div class="flex text-[14px]">
         <div class="w-24 flex">
-          <div class="pl-1 pr-1">Ligne :</div>
+          <div class="pl-4 pr-1">Ligne :</div>
           <div class="pr-4 text-[#AF75AF]" id="textLigne"></div>
         </div>
 
@@ -128,10 +134,10 @@
       </div>
 
       <div
-        class="bg-white p-6 rounded-[15px] mt-1 flex items-center justify-between w-[35vw] text-[18px] opacity-80 font-medium text-black"
+        class="bg-white p-6 rounded-[15px] mt-1 flex items-center justify-between w-[35vw] text-[18px] opacity-80 font-medium text-black shadow-2xl shadow-white/30"
       >
         <p class="">Votre tram est dans</p>
-        <div class="flex items-center gap-4 w-36 text-4xl">
+        <div class="flex items-center gap-4 w-48 text-4xl justify-end">
           <div class="flex flex-col items-center">
             <div id="FirstTramTimeHours" class="tabular-nums">-</div>
             <div class="text-base font-normal">HRS</div>
@@ -150,10 +156,12 @@
 
     <div class="w-[35vw] flex justify-end mr-5 font font-medium">
       <div
-        class="bg-white opacity-40 p-6 w-[15vw] rounded-[15px] mt-4 flex items-center justify-between text-[18px]"
+        class="bg-white opacity-40 p-6 w-[17vw] rounded-[15px] mt-4 flex items-center justify-between text-[18px shadow-2xl shadow-white/20"
       >
         <p>Suivant</p>
-        <div class="flex items-center gap-2 w-20 text-xl font-normal">
+        <div
+          class="flex items-center gap-2 w-32 text-xl justify-end font-normal"
+        >
           <div class="flex flex-col items-center">
             <div id="SecondTramTimeHours" class="tabular-nums">-</div>
             <div class="text-xs font-normal">HRS</div>
@@ -172,8 +180,6 @@
 
     <div class="absolute bottom-[-160px] text-white pb-4">
       Made By
-      <p id="tram-time"></p>
-      <p id="second-tram-time"></p>
 
       <span
         class="bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent"

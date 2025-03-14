@@ -2,6 +2,15 @@ import { Search } from "./modelSearch.js";
 import { view } from "./view.js";
 import { CountDown } from "./modelCountdown.js";
 
+// Ne pas afficher la date et l'heure par défaut
+view.dateHeureInput.style.display = "none";
+
+// Afficher la date et l'heure si l'utilisateur clique sur le bouton
+view.AjouterHeure.addEventListener("click", () => {
+  view.dateHeureInput.style.display = "block";
+  view.AjouterHeure.style.display = "none";
+});
+
 // Déclaration de la variable searchInstance
 let searchInstance = null;
 
@@ -277,6 +286,8 @@ view.favoris.addEventListener("change", (event) => {
     view.selectionArretDepart.dispatchEvent(new Event("change"));
     if (fav.date) {
       view.dateHeureInput.value = fav.date;
+      view.dateHeureInput.style.display = "block";
+      view.AjouterHeure.style.display = "none";
     }
 
     setTimeout(() => {
@@ -358,6 +369,11 @@ function updateArretArriveeOptions(arretDepartSelectionne) {
 
 // Changer le svg au changement de l'arrêt de départ
 view.selectionArretArrivee.addEventListener("change", () => {
+  resetFavorisSvg();
+});
+
+// Reset le svg favoris au changement de l'heure
+view.dateHeureInput.addEventListener("change", () => {
   resetFavorisSvg();
 });
 
