@@ -5,6 +5,9 @@ import { CountDown } from "./modelCountdown.js";
 // Déclaration de la variable searchInstance
 let searchInstance = null;
 
+// Récupérer les favoris depuis `localStorage`
+let favoris = JSON.parse(localStorage.getItem("favoris")) || [];
+
 // Charger les favoris au démarrage
 loadFavorites();
 
@@ -54,6 +57,7 @@ view.selectionLigne.addEventListener("change", async () => {
   } catch (error) {
     console.error("Erreur lors de la récupération des arrêts :", error);
   }
+  resetFavorisSvg();
 });
 
 // Écouteur d'événement sur la sélection de l'arrêt de départ
@@ -78,6 +82,8 @@ view.selectionArretDepart.addEventListener("change", () => {
 
   // Active la sélection des arrêts d'arrivée
   view.selectionArretArrivee.disabled = false;
+
+  resetFavorisSvg();
 });
 
 // Stocker les instances des compteurs pour les arrêter si besoin
@@ -203,8 +209,6 @@ view.btnFavoris.addEventListener("click", () => {
       view.selectionLigne.options[view.selectionLigne.selectedIndex].text, // Récupérer le nom affiché
   };
 
-  let favoris = JSON.parse(localStorage.getItem("favoris")) || [];
-
   // Vérifier si le favori existe déjà
   const index = favoris.findIndex(
     (f) =>
@@ -230,6 +234,7 @@ view.btnFavoris.addEventListener("click", () => {
   // Rafraîchir la liste des favoris
   updateFavorisList();
   loadFavorites();
+  intervertFavorisSvg();
 });
 
 view.favoris.addEventListener("change", (event) => {
@@ -257,6 +262,7 @@ view.favoris.addEventListener("change", (event) => {
     setTimeout(() => {
       view.selectionArretArrivee.value = fav.arretArrivee;
     }, 300);
+    setFavorisSvg();
   }, 500);
 });
 
@@ -309,7 +315,8 @@ view.btnChanger.addEventListener("click", () => {
     view.selectionArretArrivee.value = searchInstance._arretArrivee;
   }, 300);
 
-  console.log("✅ Arrêts inversés et rechargés :", searchInstance);
+  console.log("Arrêts inversés et rechargés :", searchInstance);
+  setFavorisSvg();
 });
 
 function updateArretArriveeOptions(arretDepartSelectionne) {
@@ -326,5 +333,24 @@ function updateArretArriveeOptions(arretDepartSelectionne) {
     view.selectionArretArrivee.appendChild(option);
   });
 
-  console.log("🔄 Options d'arrêts mises à jour après inversion");
+  console.log("Options d'arrêts mises à jour après inversion");
+}
+
+// Changer le svg au changement de l'arrêt de départ
+view.selectionArretArrivee.addEventListener("change", () => {
+  resetFavorisSvg();
+});
+
+function intervertFavorisSvg() {
+  view.svgFavoris.src = view.svgFavoris.src.includes("FavorisFill.svg")
+    ? "../src/Favoris.svg"
+    : "../src/FavorisFill.svg";
+}
+
+function resetFavorisSvg() {
+  view.svgFavoris.src = "../src/Favoris.svg";
+}
+
+function setFavorisSvg() {
+  view.svgFavoris.src = "../src/FavorisFill.svg";
 }

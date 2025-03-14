@@ -22,4 +22,7 @@ export const view = {
   // Text Arret / Ligne
   textArretDepart: document.getElementById("textArret"),
   textLigne: document.getElementById("textLigne"),
+
+  // Svg favoris
+  svgFavoris: document.getElementById(""),
 };
