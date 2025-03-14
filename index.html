@@ -131,7 +131,20 @@
         class="bg-white p-6 rounded-[15px] mt-1 flex items-center justify-between w-[35vw] text-[18px] opacity-80 font-medium text-black"
       >
         <p class="">Votre tram est dans</p>
-        <p id="tram-time"></p>
+        <div class="flex items-center gap-4 w-36 text-4xl">
+          <div class="flex flex-col items-center">
+            <div id="FirstTramTimeHours" class="tabular-nums">-</div>
+            <div class="text-base font-normal">HRS</div>
+          </div>
+          <div class="flex flex-col items-center">
+            <div id="FirstTramTimeMin" class="tabular-nums">-</div>
+            <div class="text-base font-normal">MIN</div>
+          </div>
+          <div class="flex flex-col items-center">
+            <div id="FirstTramTimeSeconds" class="tabular-nums">-</div>
+            <div class="text-base font-normal">SEC</div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -140,12 +153,28 @@
         class="bg-white opacity-40 p-6 w-[15vw] rounded-[15px] mt-4 flex items-center justify-between text-[18px]"
       >
         <p>Suivant</p>
-        <p id="second-tram-time"></p>
+        <div class="flex items-center gap-2 w-20 text-xl font-normal">
+          <div class="flex flex-col items-center">
+            <div id="SecondTramTimeHours" class="tabular-nums">-</div>
+            <div class="text-xs font-normal">HRS</div>
+          </div>
+          <div class="flex flex-col items-center">
+            <div id="SecondTramTimeMin" class="tabular-nums">-</div>
+            <div class="text-xs font-normal">MIN</div>
+          </div>
+          <div class="flex flex-col items-center">
+            <div id="SecondTramTimeSeconds" class="tabular-nums">-</div>
+            <div class="text-xs font-normal">SEC</div>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="absolute bottom-[-160px] text-white pb-4">
       Made By
+      <p id="tram-time"></p>
+      <p id="second-tram-time"></p>
+
       <span
         class="bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent"
         >Amaury Gau</span

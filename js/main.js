@@ -146,7 +146,15 @@ view.btnCalculer.addEventListener("click", async () => {
       )
     );
     firstCountdown.start((timer) => {
-      view.tramTime.textContent = `${timer.hours}h ${timer.minutes}m ${timer.seconds}s`;
+      view.FirstTramTimeHours.innerHTML = timer.hours;
+      if (timer.minutes == 0) {
+        view.FirstTramTimeHours.innerHTML = "0";
+      } else {
+        view.FristTramTimeMinutes.innerHTML =
+          timer.minutes > 9 ? timer.minutes : "0" + timer.minutes;
+      }
+      view.FirstTramTimeSeconds.innerHTML =
+        timer.seconds > 9 ? timer.seconds : "0" + timer.seconds;
     });
 
     view.textLigne.innerHTML = searchInstance._ligne
@@ -158,7 +166,9 @@ view.btnCalculer.addEventListener("click", async () => {
         view.selectionArretDepart.selectedIndex
       ].text;
   } else {
-    view.tramTime.textContent = " - - -";
+    view.FirstTramTimeHours.innerHTML = "-";
+    view.FristTramTimeMinutes.innerHTML = "-";
+    view.FirstTramTimeSeconds.innerHTML = "-";
   }
 
   if (nextPassages.length >= 2) {
@@ -169,10 +179,20 @@ view.btnCalculer.addEventListener("click", async () => {
       )
     );
     secondCountdown.start((timer) => {
-      view.secondTramTime.textContent = `${timer.hours}h ${timer.minutes}m ${timer.seconds}s`;
+      view.SecondTramTimeHours.innerHTML = timer.hours;
+      if (timer.minutes == 0) {
+        view.SecondTramTimeHours.innerHTML = "0";
+      } else {
+        view.SecondTramTimeMinutes.innerHTML =
+          timer.minutes > 9 ? timer.minutes : "0" + timer.minutes;
+      }
+      view.SecondTramTimeSeconds.innerHTML =
+        timer.seconds > 9 ? timer.seconds : "0" + timer.seconds;
     });
   } else {
-    view.secondTramTime.textContent = "- - -";
+    view.SecondTramTimeHours.innerHTML = "-";
+    view.SecondTramTimeMinutes.innerHTML = "-";
+    view.SecondTramTimeSeconds.innerHTML = "-";
   }
 });
 

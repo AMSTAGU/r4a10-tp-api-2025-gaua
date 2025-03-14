@@ -25,4 +25,13 @@ export const view = {
 
   // Svg favoris
   svgFavoris: document.getElementById("favorisSvg"),
+
+  // CountDown
+  FirstTramTimeHours: document.getElementById("FirstTramTimeHours"),
+  FristTramTimeMinutes: document.getElementById("FirstTramTimeMin"),
+  FirstTramTimeSeconds: document.getElementById("FirstTramTimeSeconds"),
+
+  SecondTramTimeHours: document.getElementById("SecondTramTimeHours"),
+  SecondTramTimeMinutes: document.getElementById("SecondTramTimeMin"),
+  SecondTramTimeSeconds: document.getElementById("SecondTramTimeSeconds"),
 };
