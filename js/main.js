@@ -347,7 +347,7 @@ view.btnChanger.addEventListener("click", () => {
   }, 300);
 
   console.log("Arrêts inversés et rechargés :", searchInstance);
-  setFavorisSvg();
+  resetFavorisSvg();
 });
 
 function updateArretArriveeOptions(arretDepartSelectionne) {

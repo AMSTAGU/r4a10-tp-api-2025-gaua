@@ -38,7 +38,7 @@ export class Search {
           ? arrets[arrets.length - 1].name
           : arrets[0].name;
 
-      // ✅ Correction spécifique pour la ligne E
+      // Correction spécifique pour la ligne E
       if (this._ligne === "SEM:E" && direction === "Foch - Ferrié") {
         direction = "Palluel";
       }
@@ -75,7 +75,7 @@ export class Search {
       const data = await response.json();
       if (!data || data.length === 0) throw new Error("Aucun passage trouvé.");
 
-      // 🔹 On récupère uniquement les horaires pour la direction souhaitée
+      // On récupère uniquement les horaires pour la direction souhaitée
       const times = data
         .filter((dir) => {
           const stopNameParts = dir.pattern.lastStopName.split(",");
@@ -121,10 +121,6 @@ export class Search {
         this._arretDepart,
         this._arretArrivee
       );
-    }
-
-    if (!this._direction) {
-      throw new Error("Impossible de récupérer la direction.");
     }
 
     console.log("Recherche avec direction :", this._direction);
@@ -175,9 +171,22 @@ export class Search {
       const sortedTrips = filteredTimes.sort(
         (a, b) => a.scheduledArrival - b.scheduledArrival
       );
-      const closestTrips = sortedTrips
-        .filter((trip) => trip.scheduledArrival >= selectedTime)
-        .slice(0, 2);
+
+      const closestTrip = sortedTrips
+        .filter((trip) => trip.scheduledArrival <= selectedTime) // Garde les trajets avant l'heure sélectionnée
+        .reduce(
+          (prev, curr) =>
+            curr.scheduledArrival > prev.scheduledArrival ? curr : prev,
+          sortedTrips[0]
+        ); // Trouve le plus proche AVANT
+
+      // Trouver le prochain trajet après celui sélectionné
+      const nextTrip = sortedTrips.find(
+        (trip) => trip.scheduledArrival > closestTrip.scheduledArrival
+      );
+
+      // Retourner les deux trajets (le plus proche AVANT et celui juste après)
+      const closestTrips = nextTrip ? [closestTrip, nextTrip] : [closestTrip];
 
       if (closestTrips.length === 0) {
         console.warn(
