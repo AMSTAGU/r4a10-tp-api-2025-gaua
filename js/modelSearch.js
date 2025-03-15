@@ -20,7 +20,12 @@ export class Search {
       );
       const data = await response.json();
 
-      const arrets = Object.values(data).flatMap((d) => d.arrets);
+      // ✅ Prendre uniquement les arrêts de la première instance ("0")
+      const arrets = data["0"]?.arrets || [];
+
+      if (arrets.length === 0) {
+        throw new Error("Aucun arrêt trouvé pour cette ligne.");
+      }
 
       const indexDepart = arrets.findIndex(
         (a) => a.parentStation.code === arretDepart
@@ -38,7 +43,7 @@ export class Search {
           ? arrets[arrets.length - 1].name
           : arrets[0].name;
 
-      // Correction spécifique pour la ligne E
+      //  Correction spécifique pour la ligne E
       if (this._ligne === "SEM:E" && direction === "Foch - Ferrié") {
         direction = "Palluel";
       }
