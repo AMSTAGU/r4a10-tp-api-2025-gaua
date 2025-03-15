@@ -379,8 +379,8 @@ view.dateHeureInput.addEventListener("change", () => {
 
 function intervertFavorisSvg() {
   view.svgFavoris.src = view.svgFavoris.src.includes("FavorisFill.svg")
-    ? "../src/Favoris.svg"
-    : "../src/FavorisFill.svg";
+    ? "./src/Favoris.svg"
+    : "./src/FavorisFill.svg";
 }
 
 function resetFavorisSvg() {
