@@ -384,9 +384,9 @@ function intervertFavorisSvg() {
 }
 
 function resetFavorisSvg() {
-  view.svgFavoris.src = "../src/Favoris.svg";
+  view.svgFavoris.src = "./src/Favoris.svg";
 }
 
 function setFavorisSvg() {
-  view.svgFavoris.src = "../src/FavorisFill.svg";
+  view.svgFavoris.src = "./src/FavorisFill.svg";
 }
