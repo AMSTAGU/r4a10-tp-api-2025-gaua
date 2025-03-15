@@ -13,10 +13,10 @@
     />
   </head>
   <body
-    class="relative h-full w-full bg-slate-950 font-[Outfit] flex flex-col items-center justify-center"
+    class="relative h-screen w-full bg-slate-950 font-[Outfit] flex flex-col items-center justify-between"
   >
     <div
-      class="z-[-1] absolute bottom-0 left-0 right-0 top-0 h-[150%] bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"
+      class="z-[-1] absolute bottom-0 left-0 right-0 top-0 h-full bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"
     ></div>
 
     <div class="flex items-center justify-end w-full gap-6 pt-12 px-40">
@@ -73,14 +73,14 @@
             <label for="selection_option" class="opacity-75 pl-1">
               Arret de départ</label
             >
-            <select id="arret_depart" class="text-[#AF75AF] mt-[-4px] min-w-72">
+            <select id="arret_depart" class="text-[#AF75AF] mt-[-4px] min-w-80">
               <option value="" disabled selected>Sélectionner un arrêt</option>
             </select>
           </div>
 
           <button
             id="btn_changer"
-            class="mr-6 w-10 h-12 flex items-center justify-center"
+            class="mr-6 w-9 flex items-center justify-center"
           >
             <img src="src/changer.png" alt="Changer" class="w-full" />
           </button>
@@ -178,9 +178,8 @@
       </div>
     </div>
 
-    <div class="absolute bottom-[-160px] text-white pb-4">
-      Made By
-
+    <div class="mt-auto text-white py-4 text-sm font-medium">
+      © 2025 - Made by
       <span
         class="bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent"
         >Amaury Gau</span
