@@ -157,7 +157,7 @@ view.btnCalculer.addEventListener("click", async () => {
     firstCountdown.start((timer) => {
       view.FirstTramTimeHours.innerHTML = timer.hours;
       if (timer.minutes == 0) {
-        view.FirstTramTimeHours.innerHTML = "0";
+        view.FristTramTimeMinutes.innerHTML = "0";
       } else {
         view.FristTramTimeMinutes.innerHTML =
           timer.minutes > 9 ? timer.minutes : "0" + timer.minutes;
@@ -190,7 +190,7 @@ view.btnCalculer.addEventListener("click", async () => {
     secondCountdown.start((timer) => {
       view.SecondTramTimeHours.innerHTML = timer.hours;
       if (timer.minutes == 0) {
-        view.SecondTramTimeHours.innerHTML = "0";
+        view.FristTramTimeMinutes.innerHTML = "0";
       } else {
         view.SecondTramTimeMinutes.innerHTML =
           timer.minutes > 9 ? timer.minutes : "0" + timer.minutes;
