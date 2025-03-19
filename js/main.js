@@ -288,11 +288,13 @@ view.favoris.addEventListener("change", (event) => {
       view.dateHeureInput.value = fav.date;
       view.dateHeureInput.style.display = "block";
       view.AjouterHeure.style.display = "none";
+    } else {
+      view.dateHeureInput.style.display = "none";
+      view.dateHeureInput.value = "";
+      view.AjouterHeure.style.display = "";
     }
+    view.selectionArretArrivee.value = fav.arretArrivee;
 
-    setTimeout(() => {
-      view.selectionArretArrivee.value = fav.arretArrivee;
-    }, 300);
     setFavorisSvg();
   }, 500);
 });

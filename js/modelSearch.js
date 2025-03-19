@@ -100,8 +100,8 @@ export class Search {
         ) // Trie par temps absolu
         .slice(0, 2) // Prend les 2 premiers
         .map((passage) => ({
-          serviceDay: passage.serviceDay, // ✅ Prend serviceDay
-          realtimeArrival: passage.realtimeArrival, // ✅ Prend realtimeArrival
+          serviceDay: passage.serviceDay, // Prend serviceDay
+          realtimeArrival: passage.realtimeArrival, // Prend realtimeArrival
         }));
 
       console.log(
@@ -197,7 +197,7 @@ export class Search {
         console.warn(
           "Aucun horaire valide trouvé après l'heure sélectionnée. On prend les deux prochains."
         );
-        return this.getNextPassages(); // 🔹 Retour aux horaires temps réel si impossible
+        return this.getNextPassages(); // Retour aux horaires temps réel si impossible
       }
       console.log("Trips sélectionnés :", closestTrips);
 
