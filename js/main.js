@@ -322,9 +322,20 @@ function loadFavorites() {
   favoris.forEach((fav, index) => {
     const option = document.createElement("option");
     option.value = index; // On stocke l'index du favori
-    option.textContent = `${fav.ligneNom} - ${fav.arretDepartNom} ➝ ${
+    option.textContent = `${fav.ligneNom}, ${fav.arretDepartNom} ➝ ${
       fav.arretArriveeNom
-    } heure : ${fav.date ? fav.date : "Maintenant"}`;
+    }, ${
+      fav.date
+        ? (() => {
+            const date = new Date(fav.date);
+            const month = String(date.getMonth() + 1).padStart(2, "0"); // getMonth() commence à 0
+            const day = String(date.getDate()).padStart(2, "0");
+            const hours = String(date.getHours()).padStart(2, "0");
+            const minutes = String(date.getMinutes()).padStart(2, "0");
+            return `${month}/${day} à ${hours}:${minutes}`;
+          })()
+        : "Maintenant"
+    }`;
     favorisSelect.appendChild(option);
   });
 }
