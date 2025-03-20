@@ -20,7 +20,9 @@
       class="z-[-1] absolute bottom-0 left-0 right-0 top-0 h-full bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"
     ></div>
 
-    <div class="flex items-center justify-end w-full gap-6 pt-12 px-40">
+    <div
+      class="flex items-center md:justify-end justify-center w-full gap-6 md:pt-12 pt-12 px-40"
+    >
       <a
         href="https://github.com/AMSTAGU/r4a10-tp-api-2025-gaua"
         target="_blank"
@@ -32,22 +34,26 @@
       </a>
     </div>
 
-    <div class="flex flex-col items-center pt-2">
-      <h1 class="text-white text-[64px] font-semibold mb-10">Grenoble Tram</h1>
+    <div class="flex flex-col items-center md:pt-2 pt-11">
+      <h1 class="text-white md:text-[67px] text-[10vw] font-semibold mb-10">
+        Grenoble Tram
+      </h1>
       <h1
-        class="text-[64px] font-semibold mt-[-60px] bg-gradient-to-r from-white to-[#4D234E] bg-clip-text text-transparent"
+        class="md:text-[67px] text-[9vw] font-semibold mt-[-60px] bg-gradient-to-r from-white to-[#4D234E] bg-clip-text text-transparent"
       >
         Calculator
       </h1>
     </div>
 
-    <p class="text-white text-[20px] w-[30vw] mb-10 text-center pt-2">
+    <p
+      class="text-white md:text-[20px] md:w-[30vw] w-[80vw] mb-10 text-center md:pt-2 pt-7"
+    >
       Consultez en temps réel les horaires des trams de Grenoble grâce à l’API
       SMMAG.
     </p>
 
     <div>
-      <div class="flex mb-[-7px]">
+      <div class="flex mb-[-7px] max-md:text-[12px] mx-4 md:mx-0">
         <select
           id="favoris"
           class="appearance-none bg-transparent border-none outline-none text-[#757380] ml-4 mb-3"
@@ -57,10 +63,13 @@
 
       <div class="flex items-center">
         <div
-          class="flex items-center justify-center bg-white px-3 py-3 rounded-[15px] shadow-[0_12px_70px_rgba(175,_117,_175,_0.7)]"
+          class="flex md:items-center md:flex-row flex-col md:justify-center bg-white px-3 py-3 rounded-[15px] shadow-[0_12px_70px_rgba(175,_117,_175,_0.7)] md:mx-0 mx-4"
         >
           <label for="selection_ligne"></label>
-          <select id="selection_ligne" class="opacity-75 mr-6 bg-white">
+          <select
+            id="selection_ligne"
+            class="opacity-75 mr-6 bg-white max-md:text-[14px] my-2 md:my-0"
+          >
             <option value="" disabled selected>Ligne</option>
 
             <option value="SEM:A">Ligne A</option>
@@ -70,13 +79,16 @@
             <option value="SEM:E">Ligne E</option>
           </select>
 
-          <div class="flex flex-col mr-6">
-            <label for="selection_option" class="opacity-75 pl-1">
+          <div class="flex flex-col mr-6 my-2 md:my-0">
+            <label
+              for="selection_option"
+              class="opacity-75 pl-1 max-md:text-[14px]"
+            >
               Arret de départ</label
             >
             <select
               id="arret_depart"
-              class="text-[#AF75AF] mt-[-4px] min-w-80 bg-white"
+              class="text-[#AF75AF] mt-[-4px] w-80 max-md:text-[14px] bg-white"
             >
               <option value="" disabled selected>Sélectionner un arrêt</option>
             </select>
@@ -84,19 +96,21 @@
 
           <button
             id="btn_changer"
-            class="mr-6 w-9 flex items-center justify-center"
+            class="md:mr-6 md:w-9 w-7 md:flex hidden items-center justify-center"
           >
             <img src="src/changer.png" alt="Changer" class="w-full" />
           </button>
 
-          <div class="flex flex-col w-80 mr-10">
+          <div
+            class="flex flex-col w-80 md:mr-10 max-md:text-[14px] my-2 md:my-0"
+          >
             <label for="selection_choix"></label>
             <select id="arret_arrivee" class="bg-white">
               <option value="" disabled selected>Arrivée</option>
             </select>
           </div>
 
-          <div class="flex w-56">
+          <div class="flex md:w-56 max-md:text-[14px] my-2 md:my-0">
             <div class="flex items-center" id="AjouterHeure">
               <img src="./src/plus.svg" alt="+" class="mr-3 size-4" />
               <label for="date_heure" class="pr-3 w-32 opacity-75"
@@ -111,17 +125,29 @@
           </div>
           <button
             id="btn_calculer"
-            class="px-6 py-3 text-white rounded-md bg-[linear-gradient(117.6deg,_#FFFFFF_-66.51%,_#4D234E_111.38%)] text-xl"
+            class="hidden md:flex px-6 py-3 text-white rounded-md bg-[linear-gradient(117.6deg,_#FFFFFF_-66.51%,_#4D234E_111.38%)] md:text-xl text-[12px]"
           >
             Calculer
           </button>
         </div>
         <div>
-          <button id="btn_favoris" class="pl-5">
+          <button id="btn_favoris" class="pl-5 hidden md:flex">
             <img src="./src/Favoris.svg" alt="Favoris" id="favorisSvg" />
           </button>
         </div>
       </div>
+    </div>
+
+    <div class="md:hidden flex items-center justify-center mt-3">
+      <button
+        id="btn_calculer"
+        class="px-6 py-3 text-white rounded-md bg-[linear-gradient(117.6deg,_#FFFFFF_-66.51%,_#4D234E_111.38%)]"
+      >
+        Calculer
+      </button>
+      <button id="btn_favoris" class="pl-4 w-8">
+        <img src="./src/Favoris.svg" alt="Favoris" id="favorisSvg" />
+      </button>
     </div>
 
     <div
@@ -130,7 +156,7 @@
     ></div>
 
     <div class="pt-10 text-white pl-1">
-      <div class="flex text-[14px]">
+      <div class="flex md:text-[14px] text-[12px]">
         <div class="w-24 flex">
           <div class="pl-4 pr-1">Ligne :</div>
           <div class="pr-4 text-[#AF75AF]" id="textLigne"></div>
@@ -143,10 +169,12 @@
       </div>
 
       <div
-        class="bg-white p-6 rounded-[15px] mt-1 flex items-center justify-between w-[35vw] text-[18px] opacity-80 font-medium text-black shadow-2xl shadow-white/30"
+        class="bg-white p-6 rounded-[15px] mt-1 flex items-center justify-between md:w-[35vw] w-[80vw] md:text-[18px] text-[14px] opacity-80 font-medium text-black shadow-2xl shadow-white/30"
       >
-        <p class="">Votre tram est dans</p>
-        <div class="flex items-center gap-4 w-48 text-4xl justify-end">
+        <p class="w-full">Votre tram est dans</p>
+        <div
+          class="flex items-center md:gap-4 gap-3 w-48 md:text-4xl text-2xl justify-end"
+        >
           <div class="flex flex-col items-center">
             <div id="FirstTramTimeHours" class="tabular-nums">-</div>
             <div class="text-base font-normal">HRS</div>
@@ -163,13 +191,13 @@
       </div>
     </div>
 
-    <div class="w-[35vw] flex justify-end mr-5 font font-medium">
+    <div class="md:w-[35vw] w-[80vw] flex justify-end mr-5 font font-medium">
       <div
-        class="bg-white opacity-40 p-6 w-[17vw] rounded-[15px] mt-4 flex items-center justify-between text-[18px shadow-2xl shadow-white/20"
+        class="bg-white opacity-40 md:p-6 p-4 md:w-[17vw] w-[50vw] rounded-[15px] mt-4 flex items-center justify-between md:text-[18px] text-[14px] shadow-2xl shadow-white/20"
       >
         <p>Suivant</p>
         <div
-          class="flex items-center gap-2 w-32 text-xl justify-end font-normal"
+          class="flex items-center gap-2 w-32 md:text-4xl text-xl justify-end font-normal"
         >
           <div class="flex flex-col items-center">
             <div id="SecondTramTimeHours" class="tabular-nums">-</div>
@@ -187,7 +215,9 @@
       </div>
     </div>
 
-    <div class="mt-auto text-white py-4 text-sm font-medium">
+    <div
+      class="mt-auto text-white py-4 md:pt-0 pt-20 md:pb-0 pb-10 text-sm font-medium"
+    >
       © 2025 - Made by
       <span
         class="bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent"

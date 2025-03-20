@@ -100,116 +100,123 @@ let firstCountdown = null;
 let secondCountdown = null;
 
 // Gestion du bouton Calculer
-view.btnCalculer.addEventListener("click", async () => {
-  const ligne = view.selectionLigne.value;
-  const arretDepartCode = view.selectionArretDepart.value;
-  const arretArriveeCode = view.selectionArretArrivee.value;
-  let date = view.dateHeureInput.value;
+view.btnCalculers.forEach((btn) => {
+  btn.addEventListener("click", async () => {
+    const ligne = view.selectionLigne.value;
+    const arretDepartCode = view.selectionArretDepart.value;
+    const arretArriveeCode = view.selectionArretArrivee.value;
+    let date = view.dateHeureInput.value;
 
-  if (!ligne || !arretDepartCode || !arretArriveeCode) {
-    console.warn("Veuillez remplir tous les champs avant de calculer.");
-    view.ErrorText.innerHTML =
-      "Veuillez remplir tous les champs avant de calculer.";
-    view.ErrorText.classList.add("opacity-40");
+    if (!ligne || !arretDepartCode || !arretArriveeCode) {
+      console.warn("Veuillez remplir tous les champs avant de calculer.");
+      view.ErrorText.innerHTML =
+        "Veuillez remplir tous les champs avant de calculer.";
+      view.ErrorText.classList.add("opacity-40");
 
-    setTimeout(() => {
-      view.ErrorText.classList.remove("opacity-40");
-    }, 2000);
-    return;
-  }
+      setTimeout(() => {
+        view.ErrorText.classList.remove("opacity-40");
+      }, 2000);
+      return;
+    }
 
-  // Arrêter les anciens `CountDown` s'ils existent
-  if (firstCountdown) {
-    firstCountdown.stop();
-    firstCountdown = null;
-  }
-  if (secondCountdown) {
-    secondCountdown.stop();
-    secondCountdown = null;
-  }
+    // Arrêter les anciens `CountDown` s'ils existent
+    if (firstCountdown) {
+      firstCountdown.stop();
+      firstCountdown = null;
+    }
+    if (secondCountdown) {
+      secondCountdown.stop();
+      secondCountdown = null;
+    }
 
-  // Création de l'objet Search
-  if (!searchInstance) {
-    searchInstance = new Search(ligne, arretDepartCode, arretArriveeCode, date);
-  } else {
-    searchInstance._ligne = ligne;
-    searchInstance._arretDepart = arretDepartCode;
-    searchInstance._arretArrivee = arretArriveeCode;
-    searchInstance._date = date;
-  }
-  searchInstance._direction = await searchInstance.initDirection(
-    searchInstance._ligne,
-    searchInstance._arretDepart,
-    searchInstance._arretArrivee
-  );
-  console.log("Nouvelle direction calculée :", searchInstance._direction);
-
-  console.log("Nouvelle recherche créée :", searchInstance);
-
-  //  Récupération des prochains passages
-  const nextPassages = date
-    ? await searchInstance.getScheduledTramTimes()
-    : await searchInstance.getNextPassages();
-
-  console.log("Prochains passages :", nextPassages);
-
-  // Vérification et affichage des temps de passage
-  if (nextPassages.length >= 1) {
-    firstCountdown = new CountDown(
-      getSecondsRemaining(
-        nextPassages[0].serviceDay,
-        nextPassages[0].realtimeArrival
-      )
+    // Création de l'objet Search
+    if (!searchInstance) {
+      searchInstance = new Search(
+        ligne,
+        arretDepartCode,
+        arretArriveeCode,
+        date
+      );
+    } else {
+      searchInstance._ligne = ligne;
+      searchInstance._arretDepart = arretDepartCode;
+      searchInstance._arretArrivee = arretArriveeCode;
+      searchInstance._date = date;
+    }
+    searchInstance._direction = await searchInstance.initDirection(
+      searchInstance._ligne,
+      searchInstance._arretDepart,
+      searchInstance._arretArrivee
     );
-    firstCountdown.start((timer) => {
-      view.FirstTramTimeHours.innerHTML = timer.hours;
-      if (timer.minutes == 0) {
-        view.FristTramTimeMinutes.innerHTML = "0";
-      } else {
-        view.FristTramTimeMinutes.innerHTML =
-          timer.minutes > 9 ? timer.minutes : "0" + timer.minutes;
-      }
-      view.FirstTramTimeSeconds.innerHTML =
-        timer.seconds > 9 ? timer.seconds : "0" + timer.seconds;
-    });
+    console.log("Nouvelle direction calculée :", searchInstance._direction);
 
-    view.textLigne.innerHTML = searchInstance._ligne
-      .split(":")
-      .slice(1)
-      .join(":");
-    view.textArretDepart.innerHTML =
-      view.selectionArretDepart.options[
-        view.selectionArretDepart.selectedIndex
-      ].text;
-  } else {
-    view.FirstTramTimeHours.innerHTML = "-";
-    view.FristTramTimeMinutes.innerHTML = "-";
-    view.FirstTramTimeSeconds.innerHTML = "-";
-  }
+    console.log("Nouvelle recherche créée :", searchInstance);
 
-  if (nextPassages.length >= 2) {
-    secondCountdown = new CountDown(
-      getSecondsRemaining(
-        nextPassages[1].serviceDay,
-        nextPassages[1].realtimeArrival
-      )
-    );
-    secondCountdown.start((timer) => {
-      view.SecondTramTimeHours.innerHTML = timer.hours;
-      if (timer.minutes == 0) {
-        view.FristTramTimeMinutes.innerHTML = "0";
-      } else {
-        view.SecondTramTimeMinutes.innerHTML =
-          timer.minutes > 9 ? timer.minutes : "0" + timer.minutes;
-      }
-      view.SecondTramTimeSeconds.innerHTML =
-        timer.seconds > 9 ? timer.seconds : "0" + timer.seconds;
-    });
-  } else {
-    view.SecondTramTimeHours.innerHTML = "-";
-    view.SecondTramTimeMinutes.innerHTML = "-";
-    view.SecondTramTimeSeconds.innerHTML = "-";
-  }
+    //  Récupération des prochains passages
+    const nextPassages = date
+      ? await searchInstance.getScheduledTramTimes()
+      : await searchInstance.getNextPassages();
+
+    console.log("Prochains passages :", nextPassages);
+
+    // Vérification et affichage des temps de passage
+    if (nextPassages.length >= 1) {
+      firstCountdown = new CountDown(
+        getSecondsRemaining(
+          nextPassages[0].serviceDay,
+          nextPassages[0].realtimeArrival
+        )
+      );
+      firstCountdown.start((timer) => {
+        view.FirstTramTimeHours.innerHTML = timer.hours;
+        if (timer.minutes == 0) {
+          view.FristTramTimeMinutes.innerHTML = "0";
+        } else {
+          view.FristTramTimeMinutes.innerHTML =
+            timer.minutes > 9 ? timer.minutes : "0" + timer.minutes;
+        }
+        view.FirstTramTimeSeconds.innerHTML =
+          timer.seconds > 9 ? timer.seconds : "0" + timer.seconds;
+      });
+
+      view.textLigne.innerHTML = searchInstance._ligne
+        .split(":")
+        .slice(1)
+        .join(":");
+      view.textArretDepart.innerHTML =
+        view.selectionArretDepart.options[
+          view.selectionArretDepart.selectedIndex
+        ].text;
+    } else {
+      view.FirstTramTimeHours.innerHTML = "-";
+      view.FristTramTimeMinutes.innerHTML = "-";
+      view.FirstTramTimeSeconds.innerHTML = "-";
+    }
+
+    if (nextPassages.length >= 2) {
+      secondCountdown = new CountDown(
+        getSecondsRemaining(
+          nextPassages[1].serviceDay,
+          nextPassages[1].realtimeArrival
+        )
+      );
+      secondCountdown.start((timer) => {
+        view.SecondTramTimeHours.innerHTML = timer.hours;
+        if (timer.minutes == 0) {
+          view.FristTramTimeMinutes.innerHTML = "0";
+        } else {
+          view.SecondTramTimeMinutes.innerHTML =
+            timer.minutes > 9 ? timer.minutes : "0" + timer.minutes;
+        }
+        view.SecondTramTimeSeconds.innerHTML =
+          timer.seconds > 9 ? timer.seconds : "0" + timer.seconds;
+      });
+    } else {
+      view.SecondTramTimeHours.innerHTML = "-";
+      view.SecondTramTimeMinutes.innerHTML = "-";
+      view.SecondTramTimeSeconds.innerHTML = "-";
+    }
+  });
 });
 
 function getSecondsRemaining(serviceDay, realtimeArrival) {
@@ -218,100 +225,105 @@ function getSecondsRemaining(serviceDay, realtimeArrival) {
   return nextTramTime - now;
 }
 
-view.btnFavoris.addEventListener("click", () => {
-  if (
-    !view.selectionLigne.value ||
-    !view.selectionArretDepart.value ||
-    !view.selectionArretArrivee.value
-  ) {
-    console.warn("Veuillez remplir tous les champs avant d'ajouter un favori.");
+view.btnsFavoris.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    if (
+      !view.selectionLigne.value ||
+      !view.selectionArretDepart.value ||
+      !view.selectionArretArrivee.value
+    ) {
+      console.warn(
+        "Veuillez remplir tous les champs avant d'ajouter un favori."
+      );
 
-    view.ErrorText.innerHTML =
-      "Veuillez remplir tous les champs avant d'ajouter un favori.";
-    view.ErrorText.classList.add("opacity-40");
+      view.ErrorText.innerHTML =
+        "Veuillez remplir tous les champs avant d'ajouter un favori.";
+      view.ErrorText.classList.add("opacity-40");
 
-    setTimeout(() => {
-      view.ErrorText.classList.remove("opacity-40");
-    }, 2000);
-    return;
-  }
-
-  // Récupérer les valeurs sélectionnées
-  const favori = {
-    ligne: view.selectionLigne.value,
-    arretDepart: view.selectionArretDepart.value,
-    arretDepartNom:
-      view.selectionArretDepart.options[view.selectionArretDepart.selectedIndex]
-        .text, // Récupérer le nom affiché
-    arretArrivee: view.selectionArretArrivee.value,
-    arretArriveeNom:
-      view.selectionArretArrivee.options[
-        view.selectionArretArrivee.selectedIndex
-      ].text, // Récupérer le nom affiché
-    date: view.dateHeureInput.value,
-    ligneNom:
-      view.selectionLigne.options[view.selectionLigne.selectedIndex].text, // Récupérer le nom affiché
-  };
-
-  // Vérifier si le favori existe déjà
-  const index = favoris.findIndex(
-    (f) =>
-      f.ligne === favori.ligne &&
-      f.arretDepart === favori.arretDepart &&
-      f.arretArrivee === favori.arretArrivee &&
-      f.date === favori.date
-  );
-
-  if (index !== -1) {
-    // Si le favori existe, on le supprime
-    favoris.splice(index, 1);
-    console.log("Favori supprimé :", favori);
-  } else {
-    // Sinon, on l'ajoute
-    favoris.push(favori);
-    console.log("Favori ajouté :", favori);
-  }
-
-  // Mettre à jour `localStorage`
-  localStorage.setItem("favoris", JSON.stringify(favoris));
-
-  // Rafraîchir la liste des favoris
-  updateFavorisList();
-  loadFavorites();
-  intervertFavorisSvg();
-});
-
-view.favoris.addEventListener("change", (event) => {
-  const favoris = JSON.parse(localStorage.getItem("favoris")) || [];
-  const selectedIndex = event.target.value;
-
-  if (selectedIndex === "") return; // Aucun favori sélectionné
-
-  const fav = favoris[selectedIndex];
-
-  console.log("Favori sélectionné :", fav);
-
-  // Appliquer les valeurs aux sélections
-  view.selectionLigne.value = fav.ligne;
-  view.selectionLigne.dispatchEvent(new Event("change")); // Déclenche le chargement des arrêts
-
-  // Attendre que les arrêts soient chargés avant de mettre les valeurs des arrêts
-  setTimeout(() => {
-    view.selectionArretDepart.value = fav.arretDepart;
-    view.selectionArretDepart.dispatchEvent(new Event("change"));
-    if (fav.date) {
-      view.dateHeureInput.value = fav.date;
-      view.dateHeureInput.style.display = "block";
-      view.AjouterHeure.style.display = "none";
-    } else {
-      view.dateHeureInput.style.display = "none";
-      view.dateHeureInput.value = "";
-      view.AjouterHeure.style.display = "";
+      setTimeout(() => {
+        view.ErrorText.classList.remove("opacity-40");
+      }, 2000);
+      return;
     }
-    view.selectionArretArrivee.value = fav.arretArrivee;
 
-    setFavorisSvg();
-  }, 500);
+    // Récupérer les valeurs sélectionnées
+    const favori = {
+      ligne: view.selectionLigne.value,
+      arretDepart: view.selectionArretDepart.value,
+      arretDepartNom:
+        view.selectionArretDepart.options[
+          view.selectionArretDepart.selectedIndex
+        ].text, // Récupérer le nom affiché
+      arretArrivee: view.selectionArretArrivee.value,
+      arretArriveeNom:
+        view.selectionArretArrivee.options[
+          view.selectionArretArrivee.selectedIndex
+        ].text, // Récupérer le nom affiché
+      date: view.dateHeureInput.value,
+      ligneNom:
+        view.selectionLigne.options[view.selectionLigne.selectedIndex].text, // Récupérer le nom affiché
+    };
+
+    // Vérifier si le favori existe déjà
+    const index = favoris.findIndex(
+      (f) =>
+        f.ligne === favori.ligne &&
+        f.arretDepart === favori.arretDepart &&
+        f.arretArrivee === favori.arretArrivee &&
+        f.date === favori.date
+    );
+
+    if (index !== -1) {
+      // Si le favori existe, on le supprime
+      favoris.splice(index, 1);
+      console.log("Favori supprimé :", favori);
+    } else {
+      // Sinon, on l'ajoute
+      favoris.push(favori);
+      console.log("Favori ajouté :", favori);
+    }
+
+    // Mettre à jour `localStorage`
+    localStorage.setItem("favoris", JSON.stringify(favoris));
+
+    // Rafraîchir la liste des favoris
+    updateFavorisList();
+    loadFavorites();
+    intervertFavorisSvg();
+  });
+
+  view.favoris.addEventListener("change", (event) => {
+    const favoris = JSON.parse(localStorage.getItem("favoris")) || [];
+    const selectedIndex = event.target.value;
+
+    if (selectedIndex === "") return; // Aucun favori sélectionné
+
+    const fav = favoris[selectedIndex];
+
+    console.log("Favori sélectionné :", fav);
+
+    // Appliquer les valeurs aux sélections
+    view.selectionLigne.value = fav.ligne;
+    view.selectionLigne.dispatchEvent(new Event("change")); // Déclenche le chargement des arrêts
+
+    // Attendre que les arrêts soient chargés avant de mettre les valeurs des arrêts
+    setTimeout(() => {
+      view.selectionArretDepart.value = fav.arretDepart;
+      view.selectionArretDepart.dispatchEvent(new Event("change"));
+      if (fav.date) {
+        view.dateHeureInput.value = fav.date;
+        view.dateHeureInput.style.display = "block";
+        view.AjouterHeure.style.display = "none";
+      } else {
+        view.dateHeureInput.style.display = "none";
+        view.dateHeureInput.value = "";
+        view.AjouterHeure.style.display = "";
+      }
+      view.selectionArretArrivee.value = fav.arretArrivee;
+
+      setFavorisSvg();
+    }, 500);
+  });
 });
 
 function updateFavorisList() {
@@ -425,15 +437,21 @@ view.dateHeureInput.addEventListener("change", () => {
 });
 
 function intervertFavorisSvg() {
-  view.svgFavoris.src = view.svgFavoris.src.includes("FavorisFill.svg")
-    ? "./src/Favoris.svg"
-    : "./src/FavorisFill.svg";
+  view.svgsFavoris.forEach((svg) => {
+    svg.src = svg.src.includes("FavorisFill.svg")
+      ? "./src/Favoris.svg"
+      : "./src/FavorisFill.svg";
+  });
 }
 
 function resetFavorisSvg() {
-  view.svgFavoris.src = "./src/Favoris.svg";
+  view.svgsFavoris.forEach((svg) => {
+    svg.src = "./src/Favoris.svg";
+  });
 }
 
 function setFavorisSvg() {
-  view.svgFavoris.src = "./src/FavorisFill.svg";
+  view.svgsFavoris.forEach((svg) => {
+    svg.src = "./src/FavorisFill.svg";
+  });
 }

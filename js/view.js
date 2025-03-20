@@ -9,18 +9,23 @@ export const view = {
 
   // Boutons
   btnChanger: document.getElementById("btn_changer"),
-  btnCalculer: document.getElementById("btn_calculer"),
+  //  btnCalculer: document.getElementById("btn_calculer"),
+  btnCalculers: document.querySelectorAll("#btn_calculer"),
 
   // Favoris
   favoris: document.getElementById("favoris"),
-  btnFavoris: document.getElementById("btn_favoris"),
+  // btnFavoris: document.getElementById("btn_favoris"),
+
+  btnsFavoris: document.querySelectorAll("#btn_favoris"),
 
   // Text Arret / Ligne
   textArretDepart: document.getElementById("textArret"),
   textLigne: document.getElementById("textLigne"),
 
   // Svg favoris
-  svgFavoris: document.getElementById("favorisSvg"),
+  //svgFavoris: document.getElementById("favorisSvg"),
+
+  svgsFavoris: document.querySelectorAll("#favorisSvg"),
 
   // CountDown
   FirstTramTimeHours: document.getElementById("FirstTramTimeHours"),
