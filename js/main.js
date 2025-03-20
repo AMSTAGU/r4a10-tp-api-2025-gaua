@@ -356,7 +356,26 @@ function loadFavorites() {
 }
 
 view.btnChanger.addEventListener("click", () => {
-  if (!searchInstance) return;
+  if (
+    view.selectionArretDepart.value === "" ||
+    view.selectionArretArrivee.value === ""
+  ) {
+    view.ErrorText.innerHTML =
+      "Veuillez remplir tous les champs avant d'interchanger les arrêts.";
+    view.ErrorText.classList.add("opacity-40");
+
+    setTimeout(() => {
+      view.ErrorText.classList.remove("opacity-40");
+    }, 2000);
+    return;
+  }
+
+  searchInstance = new Search(
+    view.selectionLigne.value,
+    view.selectionArretDepart.value,
+    view.selectionArretArrivee.value,
+    view.dateHeureInput.value
+  );
 
   // Inversion des arrêts dans `searchInstance`
   const temp = searchInstance._arretDepart;
