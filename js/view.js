@@ -33,4 +33,7 @@ export const view = {
 
   // Ajouter Heure
   AjouterHeure: document.getElementById("AjouterHeure"),
+
+  // Texte d'érreur
+  ErrorText: document.getElementById("Error-text"),
 };

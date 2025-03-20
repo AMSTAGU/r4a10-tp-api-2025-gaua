@@ -108,6 +108,13 @@ view.btnCalculer.addEventListener("click", async () => {
 
   if (!ligne || !arretDepartCode || !arretArriveeCode) {
     console.warn("Veuillez remplir tous les champs avant de calculer.");
+    view.ErrorText.innerHTML =
+      "Veuillez remplir tous les champs avant de calculer.";
+    view.ErrorText.classList.add("opacity-40");
+
+    setTimeout(() => {
+      view.ErrorText.classList.remove("opacity-40");
+    }, 2000);
     return;
   }
 
@@ -218,6 +225,14 @@ view.btnFavoris.addEventListener("click", () => {
     !view.selectionArretArrivee.value
   ) {
     console.warn("Veuillez remplir tous les champs avant d'ajouter un favori.");
+
+    view.ErrorText.innerHTML =
+      "Veuillez remplir tous les champs avant d'ajouter un favori.";
+    view.ErrorText.classList.add("opacity-40");
+
+    setTimeout(() => {
+      view.ErrorText.classList.remove("opacity-40");
+    }, 2000);
     return;
   }
 
