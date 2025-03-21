@@ -8,7 +8,9 @@ export const view = {
   dateHeureInput: document.getElementById("date_heure"),
 
   // Boutons
-  btnChanger: document.getElementById("btn_changer"),
+  //btnChanger: document.getElementById("btn_changer"),
+  btnsChanger: document.querySelectorAll("#btn_changer"),
+
   //  btnCalculer: document.getElementById("btn_calculer"),
   btnCalculers: document.querySelectorAll("#btn_calculer"),
 

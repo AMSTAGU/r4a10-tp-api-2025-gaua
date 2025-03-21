@@ -366,47 +366,48 @@ function loadFavorites() {
     favorisSelect.appendChild(option);
   });
 }
+view.btnsChanger.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    if (
+      view.selectionArretDepart.value === "" ||
+      view.selectionArretArrivee.value === ""
+    ) {
+      view.ErrorText.innerHTML =
+        "Veuillez remplir tous les champs avant d'interchanger les arrêts.";
+      view.ErrorText.classList.add("opacity-40");
 
-view.btnChanger.addEventListener("click", () => {
-  if (
-    view.selectionArretDepart.value === "" ||
-    view.selectionArretArrivee.value === ""
-  ) {
-    view.ErrorText.innerHTML =
-      "Veuillez remplir tous les champs avant d'interchanger les arrêts.";
-    view.ErrorText.classList.add("opacity-40");
+      setTimeout(() => {
+        view.ErrorText.classList.remove("opacity-40");
+      }, 2000);
+      return;
+    }
+
+    searchInstance = new Search(
+      view.selectionLigne.value,
+      view.selectionArretDepart.value,
+      view.selectionArretArrivee.value,
+      view.dateHeureInput.value
+    );
+
+    // Inversion des arrêts dans `searchInstance`
+    const temp = searchInstance._arretDepart;
+    searchInstance._arretDepart = searchInstance._arretArrivee;
+    searchInstance._arretArrivee = temp;
+
+    // Mise à jour des options d'arrêts d'arrivée
+    updateArretArriveeOptions(searchInstance._arretDepart);
+
+    // Appliquer les nouvelles valeurs dans les `<select>`
+    view.selectionArretDepart.value = searchInstance._arretDepart;
+    view.selectionArretDepart.dispatchEvent(new Event("change"));
 
     setTimeout(() => {
-      view.ErrorText.classList.remove("opacity-40");
-    }, 2000);
-    return;
-  }
+      view.selectionArretArrivee.value = searchInstance._arretArrivee;
+    }, 300);
 
-  searchInstance = new Search(
-    view.selectionLigne.value,
-    view.selectionArretDepart.value,
-    view.selectionArretArrivee.value,
-    view.dateHeureInput.value
-  );
-
-  // Inversion des arrêts dans `searchInstance`
-  const temp = searchInstance._arretDepart;
-  searchInstance._arretDepart = searchInstance._arretArrivee;
-  searchInstance._arretArrivee = temp;
-
-  // Mise à jour des options d'arrêts d'arrivée
-  updateArretArriveeOptions(searchInstance._arretDepart);
-
-  // Appliquer les nouvelles valeurs dans les `<select>`
-  view.selectionArretDepart.value = searchInstance._arretDepart;
-  view.selectionArretDepart.dispatchEvent(new Event("change"));
-
-  setTimeout(() => {
-    view.selectionArretArrivee.value = searchInstance._arretArrivee;
-  }, 300);
-
-  console.log("Arrêts inversés et rechargés :", searchInstance);
-  resetFavorisSvg();
+    console.log("Arrêts inversés et rechargés :", searchInstance);
+    resetFavorisSvg();
+  });
 });
 
 function updateArretArriveeOptions(arretDepartSelectionne) {
