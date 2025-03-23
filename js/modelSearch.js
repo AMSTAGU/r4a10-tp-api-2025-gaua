@@ -44,6 +44,9 @@ export class Search {
           : arrets[0].name;
 
       //  Correction spécifique pour la ligne E
+      // -> apres une certaine heure le soir, des arrets sont ajoutés (seulement pour la ligne E), cela
+      //    interfère avec la façon dont je détermine la direction
+      // -> donc voila une manière temporaire de corriger cela
       if (this._ligne === "SEM:E" && direction === "Foch - Ferrié") {
         direction = "Palluel";
       }
