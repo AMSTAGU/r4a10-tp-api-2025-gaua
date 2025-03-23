@@ -118,6 +118,10 @@ view.btnCalculers.forEach((btn) => {
       }, 2000);
       return;
     } else {
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth",
+      });
       view.loader.classList.remove("opacity-0");
       view.loader.classList.add("opacity-100");
     }
