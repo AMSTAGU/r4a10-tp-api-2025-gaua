@@ -43,4 +43,7 @@ export const view = {
 
   // Texte d'érreur
   ErrorText: document.getElementById("Error-text"),
+
+  // Loader
+  loader: document.getElementById("loader"),
 };

@@ -23,6 +23,8 @@ export class CountDown {
   }
 
   start(callback) {
+    if (callback) callback(this);
+
     this.interval = setInterval(() => {
       if (this.secondsRemaining > 0) {
         this.secondsRemaining--;

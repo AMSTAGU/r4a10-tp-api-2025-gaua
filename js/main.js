@@ -117,6 +117,9 @@ view.btnCalculers.forEach((btn) => {
         view.ErrorText.classList.remove("opacity-40");
       }, 2000);
       return;
+    } else {
+      view.loader.classList.remove("opacity-0");
+      view.loader.classList.add("opacity-100");
     }
 
     // Arrêter les anciens `CountDown` s'ils existent
@@ -216,6 +219,8 @@ view.btnCalculers.forEach((btn) => {
       view.SecondTramTimeMinutes.innerHTML = "-";
       view.SecondTramTimeSeconds.innerHTML = "-";
     }
+    view.loader.classList.remove("opacity-100");
+    view.loader.classList.add("opacity-0");
   });
 });
 
