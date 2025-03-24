@@ -1,6 +1,6 @@
 export class CountDown {
   constructor(seconds) {
-    this.secondsRemaining = seconds;
+    this.secondsRemaining = seconds > 0 ? seconds : 0; // Si négatif, force à 0
     this.updateTime();
   }
 
@@ -31,7 +31,8 @@ export class CountDown {
         this.updateTime();
         if (callback) callback(this);
       } else {
-        clearInterval(this.interval);
+        this.stop();
+        if (callback) callback(this);
       }
     }, 1000);
   }
