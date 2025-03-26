@@ -228,6 +228,31 @@ view.btnCalculers.forEach((btn) => {
   });
 });
 
+// Gestion de la touche "Entrée" pour lancer le calcul
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+
+    // Vérifie que tous les champs sont remplis avant de lancer le calcul
+    if (
+      view.selectionLigne.value &&
+      view.selectionArretDepart.value &&
+      view.selectionArretArrivee.value
+    ) {
+      view.btnCalculers[0].click(); // Simule un clic sur le bouton "Calculer"
+    } else {
+      console.warn("Veuillez remplir tous les champs avant de calculer.");
+      view.ErrorText.innerHTML =
+        "Veuillez remplir tous les champs avant de calculer.";
+      view.ErrorText.classList.add("opacity-40");
+
+      setTimeout(() => {
+        view.ErrorText.classList.remove("opacity-40");
+      }, 2000);
+    }
+  }
+});
+
 function getSecondsRemaining(serviceDay, realtimeArrival) {
   const now = Math.floor(Date.now() / 1000);
   const nextTramTime = serviceDay + realtimeArrival;
